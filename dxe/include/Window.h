@@ -23,7 +23,7 @@ namespace dxe
 			HINSTANCE hInst;
 		};
 	public:
-		Window(i32 width, i32 height, const cw16* name = L"DirectX11 Engine") noexcept;
+		Window(i32 width, i32 height, const cw16* name = L"DirectX11 Engine");
 		~Window();
 		DXE_NONCOPYABLE(Window);
 	private:

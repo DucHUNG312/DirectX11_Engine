@@ -14,13 +14,15 @@ project "dxe"
 		"**.hpp",
 		"**.cpp",
 		"**.hxx",
-		"**.cxx"
+		"**.cxx",
+		"**.rc"
 	}
 
 	includedirs
 	{
 		"include",
 		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.dxe}",		
 	}
 
 	links

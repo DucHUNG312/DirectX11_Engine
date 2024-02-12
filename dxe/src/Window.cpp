@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "resource.h"
 
 namespace dxe
 {
@@ -14,12 +15,12 @@ namespace dxe
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
 		wc.hInstance = GetInstance();
-		wc.hIcon = nullptr;
+		wc.hIcon = static_cast<HICON>(LoadImage(GetInstance(), MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));
 		wc.hCursor = nullptr;
 		wc.hbrBackground = nullptr;
 		wc.lpszMenuName = nullptr;
 		wc.lpszClassName = GetName();
-		wc.hIconSm = nullptr;
+		wc.hIconSm = static_cast<HICON>(LoadImage(GetInstance(), MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));;
 		RegisterClassEx(&wc);
 	}
 
@@ -38,7 +39,7 @@ namespace dxe
 		return wndClass.hInst;
 	}
 
-	Window::Window(i32 width, i32 height, const cw16* name /*= L"DirectX11 Engine"*/) noexcept
+	Window::Window(i32 width, i32 height, const cw16* name /*= L"DirectX11 Engine"*/)
 	{
 		// calculate window size based on desired client region size
 		RECT wr;
@@ -46,7 +47,12 @@ namespace dxe
 		wr.right = width + wr.left;
 		wr.top = 100;
 		wr.bottom = height + wr.top;
-		AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+
+		if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+		{
+			throw DXE_LAST_EXCEPT();
+		};
+		
 		// create window & get hWnd
 		hWnd = CreateWindow(
 			WindowClass::GetName(), name,
@@ -54,6 +60,12 @@ namespace dxe
 			CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
 			nullptr, nullptr, WindowClass::GetInstance(), this
 		);
+
+		if (hWnd == nullptr)
+		{
+			throw DXE_LAST_EXCEPT();
+		}
+
 		// show window
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
 	}

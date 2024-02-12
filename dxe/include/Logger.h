@@ -11,10 +11,10 @@ namespace dxe
 	class Logger
 	{
 	public:
-		static void init();
-		static void release();
-		static std::shared_ptr<spdlog::logger>& getCoreLogger() { return CoreLogger; }
-		static void addSink(std::shared_ptr<spdlog::sinks::sink>& Sink);
+		static void Init();
+		static void Release();
+		static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return CoreLogger; }
+		static void AddSink(std::shared_ptr<spdlog::sinks::sink>& Sink);
 	private:
 		static std::shared_ptr<spdlog::logger> CoreLogger;
 	};

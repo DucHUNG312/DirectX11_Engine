@@ -48,6 +48,14 @@
 #define DXE_LOG_CRITICAL_NL(...) ((void)0)
 #endif
 
+#include "Exception.h"
+#ifdef DXE_DEBUG_BUILD
+#define DXE_WND_EXCEPT(hr) ::dxe::WndException(__LINE__, __FILE__, hr)
+#define DXE_LAST_EXCEPT() ::dxe::WndException(__LINE__, __FILE__, GetLastError())
+#else
+#define DXEWND_EXCEPT(hr)
+#endif // DXE_DEBUG_BUILD
+
 
 #ifdef DXE_PLATFORM_WINDOWS
 #pragma warning(disable : 4251)

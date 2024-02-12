@@ -23,6 +23,7 @@
 #include <bit>
 #include <variant>
 #include <iomanip>
+#include <exception>
 
 // Unsigned int types.
 using u8 = uint8_t;

@@ -8,7 +8,7 @@ namespace dxe
 	std::shared_ptr<spdlog::logger> Logger::CoreLogger;
 	std::vector<spdlog::sink_ptr> Sinks;
 
-	void Logger::init()
+	void Logger::Init()
 	{
 		Sinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>()); // debug
 		// sinks.emplace_back(std::make_shared<ImGuiConsoleSink_mt>()); // ImGuiConsole
@@ -20,21 +20,21 @@ namespace dxe
 		spdlog::register_logger(CoreLogger);
 
 		// configure the loggers
-#ifdef LOG_TIMESTAMP
+#ifdef DXE_LOG_TIMESTAMP
 		spdlog::set_pattern("%^[%T] %v%$");
 #else
 		spdlog::set_pattern("%v%$");
-#endif // LOG_TIMESTAMP
+#endif // DXE_LOG_TIMESTAMP
 		CoreLogger->set_level(spdlog::level::trace);
 	}
 
-	void Logger::release()
+	void Logger::Release()
 	{
 		CoreLogger.reset();
 		spdlog::shutdown();
 	}
 
-	void Logger::addSink(spdlog::sink_ptr& sink)
+	void Logger::AddSink(spdlog::sink_ptr& sink)
 	{
 		CoreLogger->sinks().push_back(sink);
 		CoreLogger->set_pattern("%v%$");
