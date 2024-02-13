@@ -24,6 +24,8 @@
 #include <variant>
 #include <iomanip>
 #include <exception>
+#include <queue>
+#include <bitset>
 
 // Unsigned int types.
 using u8 = uint8_t;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DXE.h"
+#include "Keyboard.h"
 
 namespace dxe
 {
@@ -30,6 +31,8 @@ namespace dxe
 		static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 		static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 		LRESULT HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
+	public:
+		Keyboard keyboard;
 	private:
 		i32 width;
 		i32 height;

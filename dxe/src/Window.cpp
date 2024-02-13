@@ -109,6 +109,27 @@ namespace dxe
 		case WM_CLOSE:
 			PostQuitMessage(0);
 			return 0;
+
+		/// Clear keystate when window loses focus
+		case WM_KILLFOCUS:
+			keyboard.ClearState();
+			break;
+
+		/// Keyboard
+		case WM_SYSKEYDOWN: // To track Alt key
+		case WM_KEYDOWN:
+			if (!(lParam & 0x40000000) || keyboard.AutorepeatIsEnabled())
+			{
+				keyboard.OnKeyPressed(static_cast<unsigned char>(wParam));
+			}
+			break;
+		case WM_SYSKEYUP: // To track Alt key
+		case WM_KEYUP:
+			keyboard.OnKeyReleased(static_cast<unsigned char>(wParam));
+			break;
+		case WM_CHAR:
+			keyboard.OnChar(static_cast<unsigned char>(wParam));
+			break;
 		}
 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
