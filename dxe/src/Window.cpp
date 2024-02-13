@@ -40,6 +40,7 @@ namespace dxe
 	}
 
 	Window::Window(i32 width, i32 height, const cw16* name /*= L"DirectX11 Engine"*/)
+		: width(width), height(height), name(name)
 	{
 		// calculate window size based on desired client region size
 		RECT wr;
@@ -48,10 +49,10 @@ namespace dxe
 		wr.top = 100;
 		wr.bottom = height + wr.top;
 
-		if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE)))
+		if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 		{
 			throw DXE_LAST_EXCEPT();
-		};
+		}
 		
 		// create window & get hWnd
 		hWnd = CreateWindow(
@@ -73,6 +74,14 @@ namespace dxe
 	Window::~Window()
 	{
 		DestroyWindow(hWnd);
+	}
+
+	void Window::SetTitle(const std::string& title)
+	{
+		if (SetWindowTextA(hWnd, title.c_str()) == 0)
+		{
+			throw DXE_LAST_EXCEPT();
+		}
 	}
 
 	LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -130,6 +139,99 @@ namespace dxe
 		case WM_CHAR:
 			keyboard.OnChar(static_cast<unsigned char>(wParam));
 			break;
+
+		/// Mouse
+		case WM_MOUSEMOVE:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnMouseMove(pt.x, pt.y);
+			// in client region -> log move, and log enter + capture mouse (if not previously in window)
+			if (mouse.IsInClientRegion(width, height))
+			{
+				mouse.OnMouseMove(pt.x, pt.y);
+				if (!mouse.IsInWindow())
+				{
+					SetCapture(hWnd);
+					mouse.OnMouseEnter();
+				}
+			}
+			// not in client -> log move / maintain capture if button down
+			else
+			{
+				if (wParam & (MK_LBUTTON | MK_MBUTTON | MK_RBUTTON))
+				{
+					mouse.OnMouseMove(pt.x, pt.y);
+				}
+				// button up -> release capture / log event for leaving
+				else
+				{
+					ReleaseCapture();
+					mouse.OnMouseLeave();
+				}
+			}
+			break;
+		}
+		case WM_LBUTTONDOWN:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnLeftPressed(pt.x, pt.y);
+			break;
+		}
+		case WM_MBUTTONDOWN:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnMiddlePressed(pt.x, pt.y);
+			break;
+		}		
+		case WM_RBUTTONDOWN:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnRightPressed(pt.x, pt.y);
+			break;
+		}
+		case WM_LBUTTONUP:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnLeftReleased(pt.x, pt.y);
+			// release mouse if outside of window
+			if (!mouse.IsInClientRegion(width, height))
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+			break;
+		}
+		case WM_MBUTTONUP:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnMiddleReleased(pt.x, pt.y);
+			// release mouse if outside of window
+			if (!mouse.IsInClientRegion(width, height))
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+			break;
+		}	
+		case WM_RBUTTONUP:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			mouse.OnRightReleased(pt.x, pt.y);
+			// release mouse if outside of window
+			if (!mouse.IsInClientRegion(width, height))
+			{
+				ReleaseCapture();
+				mouse.OnMouseLeave();
+			}
+			break;
+		}
+		case WM_MOUSEWHEEL:
+		{
+			const POINTS pt = MAKEPOINTS(lParam);
+			const i32 delta = GET_WHEEL_DELTA_WPARAM(wParam);
+			mouse.OnWheelDelta(pt.x, pt.y, delta);
+			break;
+		}
 		}
 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
