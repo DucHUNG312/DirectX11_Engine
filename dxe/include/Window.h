@@ -29,6 +29,7 @@ namespace dxe
 		~Window();
 		DXE_NONCOPYABLE(Window);
 		void SetTitle(const std::string& title);
+		static std::optional<i32> ProcessMessages();
 	private:
 		static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 		static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
