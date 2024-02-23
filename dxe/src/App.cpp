@@ -23,9 +23,8 @@ namespace dxe
 
 	void App::DoFrame()
 	{
-		const f32 t = timer.Peek();
-		std::ostringstream oss;
-		oss << "Time elapsed: " << std::setprecision(1) << std::fixed << t << "s";
-		wnd.SetTitle(oss.str());
+		const f32 c = sin(timer.Peek()) / 2.f + 0.5f;
+		wnd.Gfx().ClearBuffer(c, c, 1.0f);
+		wnd.Gfx().EndFrame();
 	}
 }

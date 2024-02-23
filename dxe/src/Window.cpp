@@ -67,8 +67,9 @@ namespace dxe
 			throw DXE_LAST_EXCEPT();
 		}
 
-		// show window
+		// show window, nearly created windows start off as hidden
 		ShowWindow(hWnd, SW_SHOWDEFAULT);
+		pGfx = std::make_unique<Graphics>(hWnd);
 	}
 
 	Window::~Window()
@@ -104,6 +105,11 @@ namespace dxe
 
 		// return empty optional when not quitting app
 		return {};
+	}
+
+	Graphics& Window::Gfx()
+	{
+		return *pGfx;
 	}
 
 	LRESULT CALLBACK Window::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept

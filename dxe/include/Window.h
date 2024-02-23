@@ -3,6 +3,7 @@
 #include "DXE.h"
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Graphics.h"
 
 namespace dxe
 {
@@ -30,6 +31,7 @@ namespace dxe
 		DXE_NONCOPYABLE(Window);
 		void SetTitle(const std::string& title);
 		static std::optional<i32> ProcessMessages();
+		Graphics& Gfx();
 	private:
 		static LRESULT CALLBACK HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 		static LRESULT CALLBACK HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
@@ -42,5 +44,6 @@ namespace dxe
 		i32 height;
 		const cw16* name;
 		HWND hWnd;
+		std::unique_ptr<Graphics> pGfx;
 	};
 }
