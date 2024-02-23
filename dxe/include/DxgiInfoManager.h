@@ -1,7 +1,10 @@
 #pragma once
 
 #include "DXE.h"
+#include <wrl.h>
 #include <dxgidebug.h>
+
+namespace wrl = Microsoft::WRL;
 
 namespace dxe
 {
@@ -9,13 +12,13 @@ namespace dxe
 	{
 	public:
 		DxgiInfoManager();
-		~DxgiInfoManager();
+		~DxgiInfoManager() = default;
 		DXE_NONCOPYABLE(DxgiInfoManager);
 		void Set() noexcept;
 		std::vector<std::string> GetMessages() const;
 	private:
 		unsigned long long next = 0u;
-		struct IDXGIInfoQueue* pDxgiInfoQueue = nullptr;
+		wrl::ComPtr<IDXGIInfoQueue> pDxgiInfoQueue;
 	};
 
 }

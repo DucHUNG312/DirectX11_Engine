@@ -56,34 +56,13 @@ namespace dxe
 		));
 
 		// gain access to texture subresource in swap chain (back buffer)
-		ID3D11Resource* pBackBuffer = nullptr;
-		DXE_GFX_THROW_INFO(pSwap->GetBuffer(0, __uuidof(ID3D11Resource), reinterpret_cast<void**>(&pBackBuffer)));
+		wrl::ComPtr<ID3D11Resource> pBackBuffer;
+		DXE_GFX_THROW_INFO(pSwap->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer));
 		DXE_GFX_THROW_INFO(pDevice->CreateRenderTargetView(
-			pBackBuffer,
+			pBackBuffer.Get(),
 			nullptr,
 			&pTarget
 		));
-		pBackBuffer->Release();
-	}
-
-	Graphics::~Graphics()
-	{
-		if (pTarget != nullptr)
-		{
-			pTarget->Release();
-		}
-		if (pContext != nullptr)
-		{
-			pContext->Release();
-		}
-		if (pSwap != nullptr)
-		{
-			pSwap->Release();
-		}
-		if (pDevice != nullptr)
-		{
-			pDevice->Release();
-		}
 	}
 
 	void Graphics::EndFrame()
@@ -93,7 +72,7 @@ namespace dxe
 		infoManager.Set();
 #endif // DXE_DEBUG_BUILD
 
-		if (FAILED(hr == pSwap->Present(1u, 0u)))
+		if (FAILED(hr = pSwap->Present(1u, 0u)))
 		{
 			if (hr == DXGI_ERROR_DEVICE_REMOVED)
 			{
@@ -109,6 +88,6 @@ namespace dxe
 	void Graphics::ClearBuffer(f32 red, f32 green, f32 blue) noexcept
 	{
 		const f32 color[] = { red,green,blue,1.0f };
-		pContext->ClearRenderTargetView(pTarget, color);
+		pContext->ClearRenderTargetView(pTarget.Get(), color);
 	}
 }

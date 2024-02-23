@@ -26,15 +26,7 @@ namespace dxe
 		}
 
 		HRESULT hr;
-		DXE_GFX_THROW_NOINFO(DxgiGetDebugInterface(__uuidof(IDXGIInfoQueue), reinterpret_cast<void**>(&pDxgiInfoQueue)));
-	}
-
-	DxgiInfoManager::~DxgiInfoManager()
-	{
-		if (pDxgiInfoQueue != nullptr)
-		{
-			pDxgiInfoQueue->Release();
-		}
+		DXE_GFX_THROW_NOINFO(DxgiGetDebugInterface(__uuidof(IDXGIInfoQueue), &pDxgiInfoQueue));
 	}
 
 	void DxgiInfoManager::Set() noexcept

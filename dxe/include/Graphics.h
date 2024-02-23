@@ -9,7 +9,7 @@ namespace dxe
 	{
 	public:
 		Graphics(HWND hWnd);
-		~Graphics();
+		~Graphics() = default;
 		DXE_NONCOPYABLE(Graphics);
 
 		void EndFrame();
@@ -18,10 +18,10 @@ namespace dxe
 #ifdef DXE_DEBUG_BUILD
 		DxgiInfoManager infoManager;
 #endif // DXE_DEBUG_BUILD
-		ID3D11Device* pDevice = nullptr;
-		IDXGISwapChain* pSwap = nullptr;
-		ID3D11DeviceContext* pContext = nullptr;
-		ID3D11RenderTargetView* pTarget = nullptr;
+		wrl::ComPtr<ID3D11Device> pDevice = nullptr;
+		wrl::ComPtr<IDXGISwapChain> pSwap = nullptr;
+		wrl::ComPtr<ID3D11DeviceContext> pContext = nullptr;
+		wrl::ComPtr<ID3D11RenderTargetView> pTarget = nullptr;
 	};
 }
 
