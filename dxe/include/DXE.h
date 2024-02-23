@@ -50,10 +50,21 @@
 
 #include "Exception.h"
 #ifdef DXE_DEBUG_BUILD
-#define DXE_WND_EXCEPT(hr) ::dxe::WndException(__LINE__, __FILE__, hr)
-#define DXE_LAST_EXCEPT() ::dxe::WndException(__LINE__, __FILE__, GetLastError())
+#define DXE_WND_EXCEPT( hr ) ::dxe::WndHrException( __LINE__,__FILE__,(hr) )
+#define DXE_WND_LAST_EXCEPT() ::dxe::WndHrException( __LINE__,__FILE__,GetLastError() )
+#define DXE_WND_NOGFX_EXCEPT() ::dxe::NoGfxException( __LINE__,__FILE__ )
+
+#define DXE_GFX_THROW_FAILED(hrcall) if( FAILED( hr = (hrcall) ) ) throw ::dxe::GfxHrException( __LINE__,__FILE__,hr )
+#define DXE_GFX_EXCEPT_NOINFO(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr) )
+#define DXE_GFX_THROW_NOINFO(hrcall) if( FAILED( hr = (hrcall) ) ) throw ::dxe::GfxHrException( __LINE__,__FILE__,hr )
 #else
-#define DXEWND_EXCEPT(hr)
+#define DXE_WND_EXCEPT( hr )
+#define DXE_WND_LAST_EXCEPT()
+#define DXE_WND_NOGFX_EXCEPT()
+
+#define DXE_GFX_THROW_FAILED(hrcall)
+#define DXE_GFX_EXCEPT_NOINFO(hr)
+#define DXE_GFX_THROW_NOINFO(hrcall)
 #endif // DXE_DEBUG_BUILD
 
 

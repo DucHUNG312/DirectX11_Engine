@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Common.h"
+#include <dxerr.h>
 
 namespace dxe
 {
@@ -48,31 +48,19 @@ namespace dxe
 		mutable std::string whatBuffer;
 	};
 
+	//////////////////////////////
+	///   Window exceptions
+	//////////////////////////////
+
 	class WndException : public DXEException
 	{
 	public:
-		WndException(i32 line, const c8* file, HRESULT hr) noexcept
-			: DXEException(line, file), hr(hr)
-		{
-		}
-
-		virtual const c8* what() const noexcept override
-		{
-			std::ostringstream oss;
-			oss << GetType() << std::endl << "[Error Code] " << GetErrorCode() << std::endl << "[Description] " << GetErrorString() << std::endl << GetOriginString();
-			whatBuffer = oss.str();
-			return whatBuffer.c_str();
-		}
-
-		virtual const c8* GetType() const noexcept
-		{
-			return "Window Exception";
-		}
-
+		using DXEException::DXEException;
+		
 		static std::string TranslateErrorCode(HRESULT hr) noexcept
 		{
 			c8* pMsgBuf = nullptr;
-			DWORD nMsgLen = FormatMessageA(
+			const DWORD nMsgLen = FormatMessageA(
 				FORMAT_MESSAGE_ALLOCATE_BUFFER |
 				FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
 				nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
@@ -88,6 +76,107 @@ namespace dxe
 			LocalFree(pMsgBuf);
 			return errorString;
 		}
+	};
+
+	class WndHrException : public WndException
+	{
+	public:
+		WndHrException(i32 line, const c8* file, HRESULT hr) noexcept
+			: WndException(line, file), hr(hr)
+		{
+		}
+
+		virtual const c8* what() const noexcept override
+		{
+			std::ostringstream oss;
+			oss << GetType() << std::endl
+				<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
+				<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
+				<< "[Description] " << GetErrorDescription() << std::endl
+				<< GetOriginString();
+			whatBuffer = oss.str();
+			return whatBuffer.c_str();
+		}
+
+		virtual const c8* GetType() const noexcept
+		{
+			return "DXE Window Exception";
+		}
+
+		HRESULT GetErrorCode() const noexcept
+		{
+			return hr;
+		}
+
+		std::string GetErrorDescription() const noexcept
+		{
+			return WndException::TranslateErrorCode(hr);
+		}
+	private:
+		HRESULT hr;
+	};
+
+	class NoGfxException : public WndException
+	{
+	public:
+		using WndException::WndException;
+		const c8* GetType() const noexcept override
+		{
+			return "Chili Window Exception [No Graphics]";
+		}
+	};
+
+	//////////////////////////////
+	///   Graphics exceptions
+	//////////////////////////////
+
+	class GfxException : public DXEException
+	{
+		using DXEException::DXEException;
+	};
+
+	class GfxHrException : public GfxException
+	{
+	public:
+		GfxHrException(i32 line, const c8* file, HRESULT hr, std::vector<std::string> infoMsgs = {}) noexcept
+			: GfxException(line, file), hr(hr)
+		{	
+			// join all info messages with newlines into single string
+			for (const auto& m : infoMsgs)
+			{
+				info += m;
+				info.push_back('\n');
+			}
+			// remove final newline if exists
+			if (!info.empty())
+			{
+				info.pop_back();
+			}
+		}
+
+		const c8* what() const noexcept override
+		{
+			std::ostringstream oss;
+			oss << GetType() << std::endl
+				<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
+				<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
+				<< "[Error String] " << GetErrorString() << std::endl
+				<< "[Description] " << GetErrorDescription() << std::endl;
+
+			if (!info.empty())
+			{
+				oss << "\n[Error Info]\n" << GetErrorInfo() << std::endl << std::endl;
+			}
+
+			oss << GetOriginString();
+			whatBuffer = oss.str();
+			return whatBuffer.c_str();
+		}
+
+		const c8* GetType() const noexcept override
+		{
+			return "DXE Graphics Exception";
+		}
 
 		HRESULT GetErrorCode() const noexcept
 		{
@@ -96,10 +185,34 @@ namespace dxe
 
 		std::string GetErrorString() const noexcept
 		{
-			return TranslateErrorCode(hr);
+			return DXGetErrorString(hr);
+		}
+
+		std::string GetErrorDescription() const noexcept
+		{
+			c8 buf[512];
+			DXGetErrorDescription(hr, buf, sizeof(buf));
+			return buf;
+		}
+
+		std::string GetErrorInfo() const noexcept
+		{
+			return info;
 		}
 	private:
 		HRESULT hr;
+		std::string info;
+	};
+
+	class DeviceRemovedException : public GfxHrException
+	{
+		using GfxHrException::GfxHrException;
+	public:
+		const c8* GetType() const noexcept override
+		{
+			return "DXE Graphics Exception [Device Removed] (DXGI_ERROR_DEVICE_REMOVED)";
+		}
+	private:
+		std::string reason;
 	};
 }
-

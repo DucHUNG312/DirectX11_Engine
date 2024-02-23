@@ -51,7 +51,7 @@ namespace dxe
 
 		if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0)
 		{
-			throw DXE_LAST_EXCEPT();
+			throw DXE_WND_LAST_EXCEPT();
 		}
 		
 		// create window & get hWnd
@@ -64,7 +64,7 @@ namespace dxe
 
 		if (hWnd == nullptr)
 		{
-			throw DXE_LAST_EXCEPT();
+			throw DXE_WND_LAST_EXCEPT();
 		}
 
 		// show window, nearly created windows start off as hidden
@@ -81,7 +81,7 @@ namespace dxe
 	{
 		if (SetWindowTextA(hWnd, title.c_str()) == 0)
 		{
-			throw DXE_LAST_EXCEPT();
+			throw DXE_WND_LAST_EXCEPT();
 		}
 	}
 
@@ -109,6 +109,10 @@ namespace dxe
 
 	Graphics& Window::Gfx()
 	{
+		if (!pGfx)
+		{
+			throw DXE_WND_NOGFX_EXCEPT();
+		}
 		return *pGfx;
 	}
 
