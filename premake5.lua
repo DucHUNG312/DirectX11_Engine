@@ -22,4 +22,8 @@ workspace "dxe"
 		architecture "x86_64"
 	filter ""
 
+	group "3rdparty"
+		include "thirdparty/dxerr"
+	group ""
+
 include "dxe"

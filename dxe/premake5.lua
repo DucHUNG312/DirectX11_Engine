@@ -9,24 +9,26 @@ project "dxe"
 
 	files
 	{
-		"**.h",
-		"**.c",
-		"**.hpp",
-		"**.cpp",
-		"**.hxx",
-		"**.cxx",
+		"include/**.h",
+		"src/**.c",
+		"include/**.hpp",
+		"src/**.cpp",
+		"include/**.hxx",
+		"src/**.cxx",
 		"**.rc"
 	}
 
 	includedirs
 	{
 		"include",
+		"%{IncludeDir.dxerr}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.dxe}",		
+		"%{IncludeDir.dxe}",
 	}
 
 	links
 	{
+		"dxerr"
 	}
 
 	filter "system:windows"
