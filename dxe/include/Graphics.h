@@ -14,7 +14,7 @@ namespace dxe
 
 		void EndFrame();
 		void ClearBuffer(f32 red, f32 green, f32 blue) noexcept;
-		void DrawTestTriangle(f32 angle);
+		void DrawTestTriangle(f32 angle, f32 x, f32 y);
 		
 	private:
 #ifdef DXE_DEBUG_BUILD

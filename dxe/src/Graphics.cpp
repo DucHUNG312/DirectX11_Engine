@@ -109,7 +109,7 @@ namespace dxe
 		pContext->ClearRenderTargetView(pTarget.Get(), color);
 	}
 
-	void Graphics::DrawTestTriangle(f32 angle)
+	void Graphics::DrawTestTriangle(f32 angle, f32 x, f32 y)
 	{
 		struct Vertex
 		{
@@ -117,6 +117,7 @@ namespace dxe
 			{
 				f32 x;
 				f32 y;
+				f32 z;
 			} pos;
 
 			struct
@@ -131,12 +132,14 @@ namespace dxe
 		// create vertex buffer (1 2d triangle at center of screen)
 		Vertex vertices[] =
 		{
-			{ 0.0f, 0.5f, 255, 0, 0, 0},
-			{ 0.5f, -0.5f, 0, 255, 0, 0 },
-			{ -0.5f, -0.5f, 0, 0, 255, 0 },
-			{ -0.3f, 0.3f, 0, 255, 0, 0 },
-			{ 0.3f, 0.3f, 0, 0, 255, 0 },
-			{ 0.0f, -1.0f, 255, 0, 0, 0},
+			{ -1.0f,-1.0f,-1.0f, 255, 0, 0	},
+			{ 1.0f,-1.0f,-1.0f, 0, 255, 0	},
+			{ -1.0f,1.0f,-1.0f, 0, 0, 255	},
+			{ 1.0f,1.0f,-1.0f, 255, 255, 0	},
+			{ -1.0f,-1.0f,1.0f, 255, 0, 255	},
+			{ 1.0f,-1.0f,1.0f, 0, 255, 255	},
+			{ -1.0f,1.0f,1.0f, 0, 0, 0		},
+			{ 1.0f,1.0f,1.0f, 255, 255, 255	},
 		};
 		vertices[0].color.g = 255;
 
@@ -157,10 +160,12 @@ namespace dxe
 		// create index buffer
 		const unsigned short indices[] =
 		{
-			0,1,2,
-			0,2,3,
-			0,4,1,
-			2,1,5,
+			0,2,1, 2,3,1,
+			1,3,5, 3,7,5,
+			2,6,3, 3,6,7,
+			4,5,7, 4,7,6,
+			0,4,2, 2,4,6,
+			0,1,4, 1,5,4
 		};
 		wrl::ComPtr<ID3D11Buffer> pIndexBuffer;
 		D3D11_BUFFER_DESC ibd = {};
@@ -185,18 +190,17 @@ namespace dxe
 		// create constant buffer for transformation matrix
 		struct ConstantBuffer
 		{
-			struct
-			{
-				f32 element[4][4];
-			} transformation;
+			dx::XMMATRIX transform;
 		};
 		const ConstantBuffer cb =
 		{
 			{
-				(3.0f / 4.0f) * std::cos(angle),	std::sin(angle),	0.0f,	0.0f,
-				(3.0f / 4.0f) * -std::sin(angle),	std::cos(angle),	0.0f,	0.0f,
-				0.0f,				                0.0f,				1.0f,	0.0f,
-				0.0f,								0.0f,				0.0f,	1.0f,
+				dx::XMMatrixTranspose(
+					dx::XMMatrixRotationZ(angle) * 
+					dx::XMMatrixRotationX(angle)*
+					dx::XMMatrixTranslation(x, y, 4.0f) *
+					dx::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
+				)
 			}
 		};
 		wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
@@ -235,8 +239,8 @@ namespace dxe
 		wrl::ComPtr<ID3D11InputLayout> pInputLayout;
 		const D3D11_INPUT_ELEMENT_DESC ied[] =
 		{
-			{ "Position",0,DXGI_FORMAT_R32G32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
-			{ "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,8,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT,0,0,D3D11_INPUT_PER_VERTEX_DATA,0 },
+			{ "Color",0,DXGI_FORMAT_R8G8B8A8_UNORM,0,12,D3D11_INPUT_PER_VERTEX_DATA,0 },
 		};
 		DXE_GFX_THROW_INFO(pDevice->CreateInputLayout(
 			ied, (UINT)std::size(ied),
