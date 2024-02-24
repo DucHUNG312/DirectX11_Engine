@@ -4,6 +4,7 @@
 **/bin-int/
 **/obj/
 **/cache/**
+**/shadersout/
 Intermediates/
 Binaries
 __pycache__

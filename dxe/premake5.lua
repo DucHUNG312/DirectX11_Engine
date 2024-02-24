@@ -7,8 +7,11 @@ project "dxe"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
+	shaderobjectfileoutput ("shadersout/%%(Filename).cso")
+
 	files
 	{
+		"shaders/**.hlsl",
 		"include/**.h",
 		"src/**.c",
 		"include/**.hpp",
@@ -30,6 +33,11 @@ project "dxe"
 	{
 		"dxerr"
 	}
+
+	filter { "files:**.p.hlsl" }
+   		shadertype "Pixel"
+	filter { "files:**.v.hlsl" }
+		shadertype "Vertex"
 
 	filter "system:windows"
 		defines 
