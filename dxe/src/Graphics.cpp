@@ -109,7 +109,7 @@ namespace dxe
 		pContext->ClearRenderTargetView(pTarget.Get(), color);
 	}
 
-	void Graphics::DrawTestTriangle()
+	void Graphics::DrawTestTriangle(f32 angle)
 	{
 		struct Vertex
 		{
@@ -136,7 +136,7 @@ namespace dxe
 			{ -0.5f, -0.5f, 0, 0, 255, 0 },
 			{ -0.3f, 0.3f, 0, 255, 0, 0 },
 			{ 0.3f, 0.3f, 0, 0, 255, 0 },
-			{ 0.0f, -0.8f, 255, 0, 0, 0},
+			{ 0.0f, -1.0f, 255, 0, 0, 0},
 		};
 		vertices[0].color.g = 255;
 
@@ -181,6 +181,38 @@ namespace dxe
 		const UINT stride = sizeof(Vertex);
 		const UINT offset = 0u;
 		pContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
+
+		// create constant buffer for transformation matrix
+		struct ConstantBuffer
+		{
+			struct
+			{
+				f32 element[4][4];
+			} transformation;
+		};
+		const ConstantBuffer cb =
+		{
+			{
+				(3.0f / 4.0f) * std::cos(angle),	std::sin(angle),	0.0f,	0.0f,
+				(3.0f / 4.0f) * -std::sin(angle),	std::cos(angle),	0.0f,	0.0f,
+				0.0f,				                0.0f,				1.0f,	0.0f,
+				0.0f,								0.0f,				0.0f,	1.0f,
+			}
+		};
+		wrl::ComPtr<ID3D11Buffer> pConstantBuffer;
+		D3D11_BUFFER_DESC cbd;
+		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		cbd.Usage = D3D11_USAGE_DYNAMIC;
+		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		cbd.MiscFlags = 0u;
+		cbd.ByteWidth = sizeof(cb);
+		cbd.StructureByteStride = 0u;
+		D3D11_SUBRESOURCE_DATA csd = {};
+		csd.pSysMem = &cb;
+		DXE_GFX_THROW_INFO(pDevice->CreateBuffer(&cbd, &csd, &pConstantBuffer));
+
+		// bind constant buffer to vertex shader
+		pContext->VSSetConstantBuffers(0u, 1u, pConstantBuffer.GetAddressOf());
 
 		// create pixel shader
 		wrl::ComPtr<ID3D11PixelShader> pPixelShader;
