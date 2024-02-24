@@ -1,10 +1,7 @@
 #pragma once
 
 #include "DXE.h"
-#include <wrl.h>
 #include <dxgidebug.h>
-
-namespace wrl = Microsoft::WRL;
 
 namespace dxe
 {

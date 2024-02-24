@@ -25,6 +25,7 @@ namespace dxe
 	{
 		const f32 c = sin(timer.Peek()) / 2.f + 0.5f;
 		wnd.Gfx().ClearBuffer(c, c, 1.0f);
+		wnd.Gfx().DrawTestTriangle();
 		wnd.Gfx().EndFrame();
 	}
 }

@@ -42,3 +42,5 @@
 #define STRICT
 
 #include <Windows.h>
+#include <wrl.h>
+namespace wrl = Microsoft::WRL;

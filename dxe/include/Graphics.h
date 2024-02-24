@@ -14,6 +14,8 @@ namespace dxe
 
 		void EndFrame();
 		void ClearBuffer(f32 red, f32 green, f32 blue) noexcept;
+		void DrawTestTriangle();
+		
 	private:
 #ifdef DXE_DEBUG_BUILD
 		DxgiInfoManager infoManager;

@@ -67,7 +67,6 @@
 #define DXE_GFX_THROW_NOINFO(hrcall)
 #endif // DXE_DEBUG_BUILD
 
-
 #ifdef DXE_PLATFORM_WINDOWS
 #pragma warning(disable : 4251)
 #ifdef DXE_DYNAMIC
@@ -310,4 +309,3 @@
     return this->fn(std::forward<decltype(args)>(args)...);          \
 }
 #endif // !DXE_BIND_EVENT_FN
-

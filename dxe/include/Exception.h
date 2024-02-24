@@ -215,4 +215,46 @@ namespace dxe
 	private:
 		std::string reason;
 	};
+
+	class InfoException : public GfxException
+	{
+	public:
+		InfoException(i32 line, const c8* file, std::vector<std::string> infoMsgs) noexcept
+			: GfxException(line, file)
+		{
+			// join all info messages with newlines into single string
+			for (const auto& m : infoMsgs)
+			{
+				info += m;
+				info.push_back('\n');
+			}
+			// remove final newline if exists
+			if (!info.empty())
+			{
+				info.pop_back();
+			}
+		}
+
+		const c8* what() const noexcept override
+		{
+			std::ostringstream oss;
+			oss << GetType() << std::endl
+				<< "\n[Error Info]\n" << GetErrorInfo() << std::endl << std::endl;
+			oss << GetOriginString();
+			whatBuffer = oss.str();
+			return whatBuffer.c_str();
+		}
+
+		const c8* GetType() const noexcept override
+		{
+			return "DXE Graphics Info Exception";
+		}
+
+		std::string GetErrorInfo() const noexcept
+		{
+			return info;
+		}
+	private:
+		std::string info;
+	};
 }
