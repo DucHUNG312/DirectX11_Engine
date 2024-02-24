@@ -8,6 +8,7 @@ project "dxe"
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
 	shaderobjectfileoutput ("shadersout/%%(Filename).cso")
+	shadermodel("5.0")
 
 	files
 	{
