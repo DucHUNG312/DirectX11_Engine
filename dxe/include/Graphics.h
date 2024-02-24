@@ -20,10 +20,11 @@ namespace dxe
 #ifdef DXE_DEBUG_BUILD
 		DxgiInfoManager infoManager;
 #endif // DXE_DEBUG_BUILD
-		wrl::ComPtr<ID3D11Device> pDevice = nullptr;
-		wrl::ComPtr<IDXGISwapChain> pSwap = nullptr;
-		wrl::ComPtr<ID3D11DeviceContext> pContext = nullptr;
-		wrl::ComPtr<ID3D11RenderTargetView> pTarget = nullptr;
+		wrl::ComPtr<ID3D11Device> pDevice;
+		wrl::ComPtr<IDXGISwapChain> pSwap;
+		wrl::ComPtr<ID3D11DeviceContext> pContext;
+		wrl::ComPtr<ID3D11RenderTargetView> pTarget;
+		wrl::ComPtr<ID3D11DepthStencilView> pDSV;
 	};
 }
 
