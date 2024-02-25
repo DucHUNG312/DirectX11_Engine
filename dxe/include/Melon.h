@@ -1,19 +1,18 @@
 #pragma once
-
-#include "DXE.h"
 #include "DrawableBase.h"
 
 namespace dxe
 {
-	class Box : public DrawableBase<Box>
+	class Melon : public DrawableBase<Melon>
 	{
 	public:
-		Box(Graphics& gfx, std::mt19937& rng,
+		Melon(Graphics& gfx, std::mt19937& rng,
 			std::uniform_real_distribution<f32>& adist,
 			std::uniform_real_distribution<f32>& ddist,
 			std::uniform_real_distribution<f32>& odist,
 			std::uniform_real_distribution<f32>& rdist,
-			std::uniform_real_distribution<f32>& bdist);
+			std::uniform_int_distribution<i32>& longdist,
+			std::uniform_int_distribution<i32>& latdist);
 		void Update(f32 dt) noexcept override;
 		dx::XMMATRIX GetTransformXM() const noexcept override;
 	private:
@@ -32,7 +31,5 @@ namespace dxe
 		f32 dtheta;
 		f32 dphi;
 		f32 dchi;
-		// model transform
-		dx::XMFLOAT3X3 mt;
 	};
 }

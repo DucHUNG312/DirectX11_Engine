@@ -3,7 +3,7 @@
 #include "DXE.h"
 #include "Window.h"
 #include "Timer.h"
-#include "Box.h"
+#include "Drawable.h"
 
 namespace dxe
 {
@@ -19,6 +19,7 @@ namespace dxe
 	private:
 		Window wnd;
 		Timer timer;
-		std::vector<std::unique_ptr<class Box>> boxes;
+		std::vector<std::unique_ptr<Drawable>> drawables;
+		static constexpr size_t nDrawables = 180;
 	};
 }

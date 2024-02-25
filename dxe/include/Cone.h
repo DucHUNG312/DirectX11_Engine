@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DXE.h"
+#include "DXEMath.h"
 #include "IndexedTriangleList.h"
 
 namespace dxe
