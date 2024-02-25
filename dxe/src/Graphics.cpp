@@ -4,33 +4,6 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-#ifdef DXE_DEBUG_BUILD
-#define DXE_GFX_EXCEPT(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr), ::dxe::Graphics::infoManager.GetMessages() )
-#define DXE_GFX_THROW_INFO(hrcall)			{																											\
-												HRESULT hr;																								\
-												::dxe::Graphics::infoManager.Set();																		\
-												if( FAILED( hr = (hrcall) ) )																			\
-												{																										\
-													throw DXE_GFX_EXCEPT(hr);																			\
-												}																										\
-											}
-#define DXE_GFX_DEVICE_REMOVED_EXCEPT(hr)   ::dxe::DeviceRemovedException( __LINE__,__FILE__,(hr),::dxe::Graphics::infoManager.GetMessages() )
-#define DXE_GFX_THROW_INFO_ONLY(call)       ::dxe::Graphics::infoManager.Set();																			\
-											(call);																										\
-											{																											\
-												auto v = ::dxe::Graphics::infoManager.GetMessages();													\
-												if(!v.empty())																							\
-												{																										\
-													throw ::dxe::InfoException( __LINE__,__FILE__,v);													\
-												}																										\
-											}
-#else
-#define DXE_GFX_EXCEPT(hr)
-#define DXE_GFX_THROW_INFO(hrcall)
-#define DXE_GFX_DEVICE_REMOVED_EXCEPT(hr)
-#define DXE_GFX_THROW_INFO_ONLY(call)
-#endif
-
 namespace dxe
 {
 	Graphics::Graphics(HWND hWnd)

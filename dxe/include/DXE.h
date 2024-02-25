@@ -57,6 +57,25 @@
 #define DXE_GFX_THROW_FAILED(hrcall) if( FAILED( hr = (hrcall) ) ) throw ::dxe::GfxHrException( __LINE__,__FILE__,hr )
 #define DXE_GFX_EXCEPT_NOINFO(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr) )
 #define DXE_GFX_THROW_NOINFO(hrcall) if( FAILED( hr = (hrcall) ) ) throw ::dxe::GfxHrException( __LINE__,__FILE__,hr )
+#define DXE_GFX_EXCEPT(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr), ::dxe::Graphics::infoManager.GetMessages() )
+#define DXE_GFX_THROW_INFO(hrcall)			{																											\
+												HRESULT hr;																								\
+												::dxe::Graphics::infoManager.Set();																		\
+												if( FAILED( hr = (hrcall) ) )																			\
+												{																										\
+													throw DXE_GFX_EXCEPT(hr);																			\
+												}																										\
+											}
+#define DXE_GFX_DEVICE_REMOVED_EXCEPT(hr)   ::dxe::DeviceRemovedException( __LINE__,__FILE__,(hr),::dxe::Graphics::infoManager.GetMessages() )
+#define DXE_GFX_THROW_INFO_ONLY(call)       ::dxe::Graphics::infoManager.Set();																			\
+											(call);																										\
+											{																											\
+												auto v = ::dxe::Graphics::infoManager.GetMessages();													\
+												if(!v.empty())																							\
+												{																										\
+													throw ::dxe::InfoException( __LINE__,__FILE__,v);													\
+												}																										\
+											}
 #else
 #define DXE_WND_EXCEPT( hr )
 #define DXE_WND_LAST_EXCEPT()
@@ -65,6 +84,10 @@
 #define DXE_GFX_THROW_FAILED(hrcall)
 #define DXE_GFX_EXCEPT_NOINFO(hr)
 #define DXE_GFX_THROW_NOINFO(hrcall)
+#define DXE_GFX_EXCEPT(hr)
+#define DXE_GFX_THROW_INFO(hrcall)
+#define DXE_GFX_DEVICE_REMOVED_EXCEPT(hr)
+#define DXE_GFX_THROW_INFO_ONLY(call)
 #endif // DXE_DEBUG_BUILD
 
 #ifdef DXE_PLATFORM_WINDOWS
