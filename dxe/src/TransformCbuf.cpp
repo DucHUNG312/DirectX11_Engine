@@ -2,19 +2,24 @@
 
 namespace dxe
 {
+	std::unique_ptr<VertexConstantBuffer<dx::XMMATRIX>> TransformCbuf::pVcbuf;
+
 	TransformCbuf::TransformCbuf(Graphics& gfx, const Drawable& parent)
-		:
-		vcbuf(gfx),
-		parent(parent)
-	{}
+		: parent(parent)
+	{
+		if (!pVcbuf)
+		{
+			pVcbuf = std::make_unique<VertexConstantBuffer<dx::XMMATRIX>>(gfx);
+		}
+	}
 
 	void TransformCbuf::Bind(Graphics& gfx) noexcept
 	{
-		vcbuf.Update(gfx,
+		pVcbuf->Update(gfx,
 			dx::XMMatrixTranspose(
 				parent.GetTransformXM() * gfx.GetProjection()
 			)
 		);
-		vcbuf.Bind(gfx);
+		pVcbuf->Bind(gfx);
 	}
 }

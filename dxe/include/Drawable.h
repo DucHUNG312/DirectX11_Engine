@@ -10,6 +10,8 @@ namespace dxe
 
 	class Drawable
 	{
+		template<class T>
+		friend class DrawableBase;
 	public:
 		Drawable() = default;
 		Drawable(const Drawable&) = delete;
@@ -18,7 +20,8 @@ namespace dxe
 		virtual void Update(float dt) noexcept = 0;
 		void AddBind(std::unique_ptr<Bindable> bind) noexcept(!DXE_IS_DEBUG);
 		virtual ~Drawable() = default;
-	private:
+	protected:
+		virtual const std::vector<std::unique_ptr<Bindable>>& GetStaticBinds() const noexcept = 0;
 		const IndexBuffer* pIndexBuffer = nullptr;
 		std::vector<std::unique_ptr<Bindable>> binds;
 	};

@@ -11,7 +11,7 @@ namespace dxe
 		TransformCbuf(Graphics& gfx, const Drawable& parent);
 		void Bind(Graphics& gfx) noexcept override;
 	private:
-		VertexConstantBuffer<dx::XMMATRIX> vcbuf;
+		static std::unique_ptr<VertexConstantBuffer<dx::XMMATRIX>> pVcbuf;
 		const Drawable& parent;
 	};
 

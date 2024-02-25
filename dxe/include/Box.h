@@ -1,11 +1,11 @@
 #pragma once
 
 #include "DXE.h"
-#include "Drawable.h"
+#include "DrawableBase.h"
 
 namespace dxe
 {
-	class Box : public Drawable
+	class Box : public DrawableBase<Box>
 	{
 	public:
 		Box(Graphics& gfx, std::mt19937& rng,
