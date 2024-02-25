@@ -7,10 +7,10 @@ namespace dxe
 	{
 		std::mt19937 rng(std::random_device{}());
 		std::uniform_real_distribution<f32> adist(0.0f, 3.1415f * 2.0f);
-		std::uniform_real_distribution<f32> ddist(0.0f, 3.1415f * 2.0f);
-		std::uniform_real_distribution<f32> odist(0.0f, 3.1415f * 0.3f);
+		std::uniform_real_distribution<f32> ddist(0.0f, 3.1415f * 1.0f);
+		std::uniform_real_distribution<f32> odist(0.0f, 3.1415f * 0.08f);
 		std::uniform_real_distribution<f32> rdist(6.0f, 20.0f);
-		for (auto i = 0; i < 80; i++)
+		for (auto i = 0; i < 180; i++)
 		{
 			boxes.push_back(std::make_unique<Box>(
 				wnd.Gfx(), rng, adist,
