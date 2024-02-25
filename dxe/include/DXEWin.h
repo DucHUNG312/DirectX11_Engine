@@ -43,7 +43,6 @@
 
 #include <Windows.h>
 #include <wrl.h>
-#include <DirectXMath.h>
-
 namespace wrl = Microsoft::WRL;
-namespace dx = DirectX;
+
+#include "DXEDX.h"

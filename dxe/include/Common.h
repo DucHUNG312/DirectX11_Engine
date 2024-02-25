@@ -26,6 +26,7 @@
 #include <exception>
 #include <queue>
 #include <bitset>
+#include <random>
 
 // Unsigned int types.
 using u8 = uint8_t;

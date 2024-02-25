@@ -18,20 +18,26 @@
 
 #endif // DXE_DEBUG
 
-#if DXE_ENABLE_LOG
-#define DXE_LOG_TRACE(...) SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::trace, __VA_ARGS__)
-#define DXE_LOG_DEBUG(...) SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::debug, __VA_ARGS__)
-#define DXE_LOG_INFO(...) SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::info, __VA_ARGS__)
-#define DXE_LOG_WARN(...) SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::warn, __VA_ARGS__)
-#define DXE_LOG_ERROR(...) SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::err, __VA_ARGS__)
-#define DXE_LOG_CRITICAL(...) SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::critical, __VA_ARGS__)
+#ifdef DXE_DEBUG_BUILD
+#define DXE_IS_DEBUG true
+#else
+#define DXE_IS_DEBUG false
+#endif // DXE_DEBUG_BUILD
 
-#define DXE_LOG_TRACE_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::trace, __VA_ARGS__), DXE_LOG_TRACE('\n'))
-#define DXE_LOG_DEBUG_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::debug, __VA_ARGS__), DXE_LOG_TRACE('\n'))
-#define DXE_LOG_INFO_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::info, __VA_ARGS__), DXE_LOG_TRACE('\n'))
-#define DXE_LOG_WARN_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::warn, __VA_ARGS__), DXE_LOG_TRACE('\n'))
-#define DXE_LOG_ERROR_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::err, __VA_ARGS__), DXE_LOG_TRACE('\n'))
-#define DXE_LOG_CRITICAL_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::getCoreLogger(), spdlog::level::level_enum::critical, __VA_ARGS__), DXE_LOG_TRACE('\n'))
+#if DXE_ENABLE_LOG
+#define DXE_LOG_TRACE(...) SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::trace, __VA_ARGS__)
+#define DXE_LOG_DEBUG(...) SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::debug, __VA_ARGS__)
+#define DXE_LOG_INFO(...) SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::info, __VA_ARGS__)
+#define DXE_LOG_WARN(...) SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::warn, __VA_ARGS__)
+#define DXE_LOG_ERROR(...) SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::err, __VA_ARGS__)
+#define DXE_LOG_CRITICAL(...) SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::critical, __VA_ARGS__)
+
+#define DXE_LOG_TRACE_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::trace, __VA_ARGS__), DXE_LOG_TRACE('\n'))
+#define DXE_LOG_DEBUG_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::debug, __VA_ARGS__), DXE_LOG_TRACE('\n'))
+#define DXE_LOG_INFO_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::info, __VA_ARGS__), DXE_LOG_TRACE('\n'))
+#define DXE_LOG_WARN_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::warn, __VA_ARGS__), DXE_LOG_TRACE('\n'))
+#define DXE_LOG_ERROR_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::err, __VA_ARGS__), DXE_LOG_TRACE('\n'))
+#define DXE_LOG_CRITICAL_NL(...) (SPDLOG_LOGGER_CALL(::dxe::Logger::GetCoreLogger(), spdlog::level::level_enum::critical, __VA_ARGS__), DXE_LOG_TRACE('\n'))
 #else
 #define DXE_LOG_TRACE(...) ((void)0)
 #define DXE_LOG_DEBUG(...) ((void)0)
@@ -57,20 +63,20 @@
 #define DXE_GFX_THROW_FAILED(hrcall) if( FAILED( hr = (hrcall) ) ) throw ::dxe::GfxHrException( __LINE__,__FILE__,hr )
 #define DXE_GFX_EXCEPT_NOINFO(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr) )
 #define DXE_GFX_THROW_NOINFO(hrcall) if( FAILED( hr = (hrcall) ) ) throw ::dxe::GfxHrException( __LINE__,__FILE__,hr )
-#define DXE_GFX_EXCEPT(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr), ::dxe::Graphics::infoManager.GetMessages() )
+#define DXE_GFX_EXCEPT(hr) ::dxe::GfxHrException( __LINE__,__FILE__,(hr), ::dxe::Graphics::GetInfoManager().GetMessages() )
 #define DXE_GFX_THROW_INFO(hrcall)			{																											\
 												HRESULT hr;																								\
-												::dxe::Graphics::infoManager.Set();																		\
+												::dxe::Graphics::GetInfoManager().Set();																\
 												if( FAILED( hr = (hrcall) ) )																			\
 												{																										\
 													throw DXE_GFX_EXCEPT(hr);																			\
 												}																										\
 											}
-#define DXE_GFX_DEVICE_REMOVED_EXCEPT(hr)   ::dxe::DeviceRemovedException( __LINE__,__FILE__,(hr),::dxe::Graphics::infoManager.GetMessages() )
-#define DXE_GFX_THROW_INFO_ONLY(call)       ::dxe::Graphics::infoManager.Set();																			\
+#define DXE_GFX_DEVICE_REMOVED_EXCEPT(hr)   ::dxe::DeviceRemovedException( __LINE__,__FILE__,(hr),::dxe::Graphics::GetInfoManager().GetMessages() )
+#define DXE_GFX_THROW_INFO_ONLY(call)       ::dxe::Graphics::GetInfoManager().Set();																	\
 											(call);																										\
 											{																											\
-												auto v = ::dxe::Graphics::infoManager.GetMessages();													\
+												auto v = ::dxe::Graphics::GetInfoManager().GetMessages();												\
 												if(!v.empty())																							\
 												{																										\
 													throw ::dxe::InfoException( __LINE__,__FILE__,v);													\
@@ -182,6 +188,11 @@
 #define DXE_L1_CACHE_LINE_SIZE 128
 #else
 #define DXE_L1_CACHE_LINE_SIZE 64
+#endif
+
+#ifndef DXE_THROW
+#define DXE_THROW throw std::logic_error(std::string("Logic Error: ") + __FILE__ + " at line: " + std::to_string(__LINE__))
+#define DXE_RUNTIME_THROW throw std::runtime_error(std::string("Runtime Error: ") + __FILE__ + " at line: " + std::to_string(__LINE__))
 #endif
 
 // enable check
